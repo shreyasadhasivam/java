@@ -1,37 +1,94 @@
-class Student{
-	String name;
-	int id;
-}
+import java.util.Scanner;
 
-class Sports extends Student{
-	char s_grade;
-}
+class InvalidDayException extends Exception
+{
+	int date;
 
-class Exam extends Student{
-	char e_grade;
-}
+	InvalidDayException(int date)
+	{
+		this.date = date;
+	}
 
-interface SportExam{
-	Sports s = new Sports();
-	Exam e = new Exam();
-}
-
-class Results implements SportExam{
-	public static void main(String[] args){
-		s.name = "John";
-		s.id = 1;
-		s.s_grade = 'A';
-		e.name = "John";
-		e.id = 1;
-		e.e_grade = 'B';
-		System.out.println("Name: " + s.name);
-		System.out.println("ID: " + s.id);
-		System.out.println("Sport Grade: " + s.s_grade);
-		System.out.println("Exam Grade: " + e.e_grade);
-	
-		String final_result;
-		void display(){
-			System.out.println("The final result is "+final_result);
-		}
+	public String toString()
+	{
+		return date +" is invalid.";
 	}
 }
+
+class InvalidMonthException extends Exception
+{
+	int month;
+
+	InvalidMonthException(int month)
+	{
+		this.month = month;
+	}
+	public String toString()
+	{
+		return month+ " is invalid.";
+	}
+}
+
+class CurrentDate
+{
+	Scanner sc = new Scanner(System.in);
+	int date,month,year;
+	boolean createDate()
+	{
+
+		boolean flag = true;
+		try
+		{
+			System.out.print("Enter date:");
+			date = sc.nextInt();
+			System.out.print("Enter month:");
+			month= sc.nextInt();
+			System.out.print("Enter year:");
+			year = sc.nextInt();
+
+			if((date<=0) || (month == 2 && (year%4==0) && date>29) || (month==2 && (year%4!=0) && date>28) || date>31)
+				throw new InvalidDayException(date);
+
+			else if(month<=0 || month >12)
+				throw new InvalidMonthException(month);
+			else if(month==4 ||month ==6||month==9||month==11)
+				if(date>30)
+					throw new InvalidDayException(date);
+			else if(month==1||month==3||month==5||month==7||month==8||month==10||month==12)
+				if(date>31)
+					throw new InvalidDayException(date);
+			
+
+		}
+
+		catch(InvalidDayException d)
+		{
+			System.out.println(d);
+			flag = false;
+		}
+		catch(InvalidMonthException m)
+		{
+			System.out.println(m);
+			flag = false;
+		}
+		return flag;
+		// System.out.println(flag);
+		
+	}
+
+	void displayDate()
+	{
+		System.out.println("The date is "+date+"/"+month+"/"+year);
+	}
+}
+
+class DateDemo
+{
+	public static void main(String[] args)
+	{
+		CurrentDate cd = new CurrentDate();
+		if(cd.createDate())
+			cd.displayDate();
+	}
+}
+
